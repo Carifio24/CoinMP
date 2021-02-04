@@ -304,6 +304,77 @@ void SolveProblemBakery(void)
 	  const_cast<char**>(colNames), const_cast<char**>(rowNames), objectName, NULL, NULL);
 }
 
+void SolveProblemLinearInfeasible(void)
+{
+  const char* problemName = "LinearInfeasible";
+	int colCount = 2;
+	int rowCount = 3;
+	int nonZeroCount = 4;
+	int rangeCount = 0;
+
+	const char* objectName = "Objective";
+	int objectSense = SOLV_OBJSENS_MAX;
+	double objectConst = -1;
+	double objectCoeffs[2] = { 0.5 , 0.5 };
+
+	double lowerBounds[2] = { 2, 2 };
+	double upperBounds[2] = { 1000000, 1000000 };
+
+	char rowType[2] = { 'L', 'L' };
+	double rhsValues[2] = { 2.2 , 1.6 };
+
+	int matrixBegin[2+1] = { 0, 2, 4 };
+	int matrixCount[2] = { 2, 2 };
+	int matrixIndex[4] = { 0, 1, 0, 1 };
+	double matrixValues[4] = { 3.6, 1, -1, 1 };
+
+	const char* colNames[2] = {"X", "Y"};
+	const char* rowNames[3] = {"c1", "c2", "c3"};
+
+	double optimalValue = 0;
+
+	RunTestProblem(problemName, optimalValue, colCount, rowCount,
+	  nonZeroCount, rangeCount, objectSense, objectConst, objectCoeffs, 
+	  lowerBounds, upperBounds, rowType, rhsValues, NULL, 
+	  matrixBegin, matrixCount, matrixIndex, matrixValues, 
+	  const_cast<char**>(colNames), const_cast<char**>(rowNames), objectName, NULL, NULL);
+}
+
+void SolveProblemLinearDualInfeasible(void)
+{
+  const char* problemName = "LinearDualInfeasible";
+	int colCount = 2;
+	int rowCount = 2;
+	int nonZeroCount = 4 ;
+	int rangeCount = 0;
+
+	const char* objectName = "Objective";
+	int objectSense = SOLV_OBJSENS_MAX;
+	double objectConst = -10.0;
+	double objectCoeffs[2] = { 0.2 , 0.3 };
+
+	double lowerBounds[2] = { 0, 0 };
+	double* upperBounds = NULL;
+
+	char rowType[2] = { 'L', 'L' };
+	double rhsValues[2] = { -6.3 , -8 };
+
+	int matrixBegin[2+1] = { 0 , 2, 4 };
+	int matrixCount[2] = { 2 , 2 };
+	int matrixIndex[4] = { 0, 1, 0, 1 };
+	double matrixValues[4] = { 2.1, 0.7, -1, -2 };
+
+	const char* colNames[2] = {"X", "Y"};
+	const char* rowNames[3] = {"c1", "c2"};
+
+	double optimalValue = 0;
+
+	RunTestProblem(problemName, optimalValue, colCount, rowCount,
+	  nonZeroCount, rangeCount, objectSense, objectConst, objectCoeffs, 
+	  lowerBounds, upperBounds, rowType, rhsValues, NULL, 
+	  matrixBegin, matrixCount, matrixIndex, matrixValues, 
+	  const_cast<char**>(colNames), const_cast<char**>(rowNames), objectName, NULL, NULL);
+}
 
 void SolveProblemAfiro(void)
 {
@@ -438,6 +509,80 @@ void SolveProblemP0033(void)
 	  mcnt, midx, mval, const_cast<char**>(colnames), const_cast<char**>(rownames), objectname, NULL, ctyp);
 }
 
+void SolveProblemIntegerDualInfeasible(void)
+{
+  const char* problemName = "IntegerDualInfeasible";
+	int colCount = 2;
+	int rowCount = 3;
+	int nonZeroCount = 5 ;
+	int rangeCount = 0;
+
+	const char* objectName = "Objective";
+	int objectSense = SOLV_OBJSENS_MAX;
+	double objectConst = 0;
+	double objectCoeffs[2] = { 0.5 , 0.5 };
+
+	double lowerBounds[2] = { 0, 0 };
+	double upperBounds[2] = { 1e+37, 1e+37 };
+
+	char rowType[2] = { 'L', 'L' };
+	char colType[2] = { 'I', 'I' };
+	double rhsValues[3] = { 5 , 3, -5 };
+
+	int matrixBegin[2+1] = { 0, 3, 5 };
+	int matrixCount[2] = { 3, 2 };
+	int matrixIndex[5] = { 0, 1, 2, 0, 1 };
+	double matrixValues[5] = { 1, 1, 1, -1, -1 };
+
+	const char* colNames[2] = {"X", "Y"};
+	const char* rowNames[3] = {"c1", "c2", "c3"};
+
+	double optimalValue = 0;
+
+	RunTestProblem(problemName, optimalValue, colCount, rowCount,
+	  nonZeroCount, rangeCount, objectSense, objectConst, objectCoeffs, 
+	  lowerBounds, upperBounds, rowType, rhsValues, NULL, 
+	  matrixBegin, matrixCount, matrixIndex, matrixValues, 
+	  const_cast<char**>(colNames), const_cast<char**>(rowNames), objectName, NULL, colType);
+}
+
+void SolveProblemIntegerInfeasible(void)
+{
+  const char* problemName = "IntegerInfeasible";
+	int colCount = 1;
+	int rowCount = 2;
+	int nonZeroCount = 2;
+	int rangeCount = 0;
+
+	const char* objectName = "Objective";
+	int objectSense = SOLV_OBJSENS_MAX;
+	double objectConst = 0;
+	double objectCoeffs[1] = { 1 };
+
+	double lowerBounds[1] = { 0 };
+	double upperBounds[1] = { 1e+37 };
+
+	char rowType[2] = { 'L', 'L' };
+	char colType[1] = { 'I' };
+	double rhsValues[2] = { -5 , 3 };
+
+	int matrixBegin[1+1] = { 0, 2 };
+	int matrixCount[2] = { 1, 1 };
+	int matrixIndex[2] = { 0, 1 };
+	double matrixValues[2] = { -1, 1 };
+
+	const char* colNames[1] = {"X"};
+	const char* rowNames[2] = {"c1", "c2"};
+
+	double optimalValue = 0;
+
+	RunTestProblem(problemName, optimalValue, colCount, rowCount,
+	  nonZeroCount, rangeCount, objectSense, objectConst, objectCoeffs, 
+	  lowerBounds, upperBounds, rowType, rhsValues, NULL, 
+	  matrixBegin, matrixCount, matrixIndex, matrixValues, 
+	  const_cast<char**>(colNames), const_cast<char**>(rowNames), objectName, NULL, colType);
+}
+
 
 void SolveProblemExmip1(void)
 {
@@ -476,7 +621,6 @@ void SolveProblemExmip1(void)
 	  objsens, objconst, dobj, dclo, dcup, rtyp, drhs, drng, mbeg, 
 	  mcnt, midx, mval, const_cast<char**>(colnames), const_cast<char**>(rownames), objectname, NULL, ctyp);
 }
-
 
 
 void SolveProblemGamsSos1a(void)
@@ -615,6 +759,10 @@ int main (int argc, char* argv[])
 	CoinVersion = CoinGetVersion();
 	fprintf(stdout, "UnitTest: %s version %.20g\n\n", SolverName, CoinVersion);
 	SolveProblemCoinTest();
+	SolveProblemLinearInfeasible();
+	SolveProblemLinearDualInfeasible();
+	SolveProblemIntegerInfeasible();
+	SolveProblemIntegerDualInfeasible();
 	SolveProblemBakery();
 	SolveProblemAfiro();
 	SolveProblemP0033();

@@ -992,16 +992,108 @@ int CbcRetrieveSolutionResults(HCBC hCbc, PPROBLEM pProblem, PRESULT pResult)
 		pResult->MipNodeCount   = pCbc->cbc->getNodeCount();
 	}
 
-	switch (pResult->SolutionStatus) {
-		case 0:	strcpy(pResult->SolutionText, "Optimal solution found");		break;
-		case 1:	strcpy(pResult->SolutionText, "Problem primal infeasible");	break;
-		case 2:	strcpy(pResult->SolutionText, "Problem dual infeasible");		break;
-		case 3:	strcpy(pResult->SolutionText, "Stopped on iterations");			break;
-		case 4: strcpy(pResult->SolutionText, "Stopped due to errors");			break;
-		case 5: strcpy(pResult->SolutionText, "Stopped by user");		break;
-		default: 
-			sprintf(pResult->SolutionText, "Unknown CBC solution status (%d)", pResult->SolutionStatus);
-			break;
+	if (pProblem->SolveAsMIP) {
+
+		// Here we determine the status of the CBC problem based on the status and secondaryStatus codes
+		// From the CBC source:
+		/** Final status of problem
+	        Some of these can be found out by is...... functions
+	        -1 before branchAndBound
+	        0 finished - check isProvenOptimal or isProvenInfeasible to see if solution found
+	        (or check value of best solution)
+	        1 stopped - on maxnodes, maxsols, maxtime
+	        2 difficulties so run was abandoned
+	        (5 event user programmed event occurred)
+	    */
+
+	    /** Secondary status of problem
+	        -1 unset (status_ will also be -1)
+	        0 search completed with solution
+	        1 linear relaxation not feasible (or worse than cutoff)
+	        2 stopped on gap
+	        3 stopped on nodes
+	        4 stopped on time
+	        5 stopped on user event
+	        6 stopped on solutions
+	        7 linear relaxation unbounded
+	        8 stopped on iteration limit
+	    */
+
+		switch (pResult->SolutionStatus) {
+
+			// Finished before branchAndBound
+			case -1:
+				if (pCbc->cbc->isInitialSolveProvenOptimal()) {
+					strcpy(pResult->SolutionText, "Optimal solution found"); break;
+				} else if (pCbc->cbc->isInitialSolveProvenPrimalInfeasible()) {
+					strcpy(pResult->SolutionText, "Problem primal infeasible"); break;
+				} else if (pCbc->cbc->isInitialSolveProvenDualInfeasible()) {
+					strcpy(pResult->SolutionText, "Problem dual infeasible"); break;
+				} else if (pCbc->cbc->isInitialSolveAbandoned()) {
+					strcpy(pResult->SolutionText, "Problem abandoned"); break;
+				} else {
+					sprintf(pResult->SolutionText, "Unknown CBC solution status (%d), secondary status (%d)", pResult->SolutionStatus, pCbc->cbc->secondaryStatus());
+					break;
+				}
+
+			// Finished
+			case 0:
+				if (pCbc->cbc->isProvenOptimal()) {
+					strcpy(pResult->SolutionText, "Optimal solution found"); break;
+				} else if(pCbc->cbc->isProvenInfeasible()){
+					strcpy(pResult->SolutionText, "Problem infeasible"); break;
+				} else if (pCbc->cbc->isProvenDualInfeasible()) {
+					strcpy(pResult->SolutionText, "Problem dual infeasible"); break;
+				} else if (pCbc->cbc->secondaryStatus() == 2) { // No method flag to check for this
+					strcpy(pResult->SolutionText, "Stopped due to integer gap size"); break;
+				} else {
+					sprintf(pResult->SolutionText, "Unknown CBC solution status (%d), secondary status (%d)", pResult->SolutionStatus, pCbc->cbc->secondaryStatus());
+					break;
+				}
+
+			// Stopped for some reason
+			case 1:
+				if (pCbc->cbc->isNodeLimitReached()) { 						// Secondary status 3
+					strcpy(pResult->SolutionText, "Stopped on nodes"); break;
+				} else if (pCbc->cbc->isSecondsLimitReached()) { 							// Secondary status 4
+					strcpy(pResult->SolutionText, "Stopped due to time"); break;
+				} else if (pCbc->cbc->isSolutionLimitReached()) { 					// Secondary status 6
+					strcpy(pResult->SolutionText, "Stopped on number of solutions"); break;
+				} else {
+
+					// There don't seem to be boolean methods to check for these
+					// The secondary status is never 1, 5, or 7 when the status is 1
+					switch (pCbc->cbc->secondaryStatus()) {
+						case 2:
+							strcpy(pResult->SolutionText, "Stopped on gap"); break;
+						case 8:
+							strcpy(pResult->SolutionText, "Stopped on iterations"); break;
+						default: 
+							sprintf(pResult->SolutionText, "Unknown CBC solution status (%d), secondary status (%d)", pResult->SolutionStatus, pCbc->cbc->secondaryStatus());
+							break;
+					}
+				}
+
+			case 2: strcpy(pResult->SolutionText, "Stopped due to errors");			break;
+			case 5: strcpy(pResult->SolutionText, "Stopped by user");		break;
+
+			default: 
+				sprintf(pResult->SolutionText, "Unknown CBC solution status (%d), secondary status (%d)", pResult->SolutionStatus, pCbc->cbc->secondaryStatus());
+				break;
+		}
+
+	} else {
+		switch (pResult->SolutionStatus) {
+			case 0:	strcpy(pResult->SolutionText, "Optimal solution found");		break;
+			case 1:	strcpy(pResult->SolutionText, "Problem primal infeasible");	break;
+			case 2:	strcpy(pResult->SolutionText, "Problem dual infeasible");		break;
+			case 3:	strcpy(pResult->SolutionText, "Stopped on iterations");			break;
+			case 4: strcpy(pResult->SolutionText, "Stopped due to errors");			break;
+			case 5: strcpy(pResult->SolutionText, "Stopped by user");		break;
+			default: 
+				sprintf(pResult->SolutionText, "Unknown CBC solution status (%d)", pResult->SolutionStatus);
+				break;
+		}
 	}
 
 	if (!pProblem->SolveAsMIP) {

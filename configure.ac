@@ -6,13 +6,7 @@
 
 # Author:  Andreas Waechter            IBM    2006-04-13
 
-#############################################################################
-#                       Names and other basic things                        #
-#############################################################################
-
-AC_PREREQ(2.59)
-
-AC_INIT([CoinMP],[trunk],[coinmp@list.coin-or.org])
+AC_INIT([CoinMP], [devel], [https://github.com/coin-or/CoinMP/issues/new], [coin-or-coinmp], [https://github.com/coin-or/CoinMP])
 
 AC_COPYRIGHT([
 Copyright 2006 International Business Machines and others.
@@ -20,36 +14,39 @@ All Rights Reserved.
 This file is part of the open source package CoinMP which is distributed
 under the Common Public License.])
 
-AC_REVISION(0.9)
-
 # List one file in the package so that the configure script can test
-# whether the package is actually there
-AC_CONFIG_SRCDIR(configure.ac)
+# whether the package is actually there.
+AC_CONFIG_SRCDIR(src/CoinMP.h)
 
-# Where should everything be installed by default?  Here, we want it
-# to be installed directly in 'bin', 'lib', 'include' subdirectories
-# of the directory where configure is run.  The default would be
-# /usr/local.
-AC_PREFIX_DEFAULT([`pwd`])
+# Do some initialization work (version numbers, change prefix default, ...)
+AC_COIN_INITIALIZE
 
 #############################################################################
-#     We only need automake to generate Makefiles for the distribution      #
+#                         Standard build tool stuff                         #
 #############################################################################
 
-# Initialize automake
-AC_COIN_INIT_AUTOMAKE
+# Get the name of the C++ compiler and appropriate compiler options
+AC_COIN_PROG_CXX
+
+# Initialize libtool
+AC_COIN_PROG_LIBTOOL
+
+# set RPATH_FLAGS to the compiler link flags required to hardcode location
+# of the shared objects (expanded_libdir is set somewhere in configure before)
+# (use in examples Makefile)
+AC_COIN_RPATH_FLAGS([$expanded_libdir])
 
 #############################################################################
-#                  Check which subprojects are there                        #
+#                            COIN-OR components                             #
 #############################################################################
 
-AC_COIN_MAIN_PACKAGEDIR(Sample, Data)
-AC_COIN_MAIN_PACKAGEDIR(CoinUtils)
-AC_COIN_MAIN_PACKAGEDIR(Osi)
-AC_COIN_MAIN_PACKAGEDIR(Clp)
-AC_COIN_MAIN_PACKAGEDIR(Cgl)
-AC_COIN_MAIN_PACKAGEDIR(Cbc)
-AC_COIN_MAIN_PACKAGEDIR(CoinMP)
+# Required packages.
+# We need Clp, Cbc, and the OSI interface to CLP to build CoinCbc.cpp.
+
+AC_COIN_CHK_PKG(Cbc, [cbc clp osi-clp])
+if test $coin_has_cbc != yes; then
+    AC_MSG_ERROR([Required package Cbc not available.])
+fi
 
 ##############################################################################
 #                   Finishing up by writing all the output                   #
@@ -57,7 +54,16 @@ AC_COIN_MAIN_PACKAGEDIR(CoinMP)
 
 # Here list all the files that configure should create (except for the
 # configuration header file)
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile
+                 src/Makefile
+                 test/Makefile
+                 examples/Makefile
+                 coinmp.pc
+                 coinmp-uninstalled.pc])
+
+
+# Here put the location and name of the configuration header file
+AC_CONFIG_HEADER([src/config.h src/config_coinmp.h])
 
 # Finally, we let configure write all the output...
 AC_COIN_FINALIZE

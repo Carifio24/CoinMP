@@ -6,7 +6,7 @@
 
 # Author:  Andreas Waechter            IBM    2006-04-13
 
-AC_INIT([CoinMP], [devel], [https://github.com/coin-or/CoinMP/issues/new], [coin-or-coinmp], [https://github.com/coin-or/CoinMP])
+AC_INIT([CoinMP],[devel],[https://github.com/coin-or/CoinMP/issues/new],[coin-or-coinmp],[https://github.com/coin-or/CoinMP])
 
 AC_COPYRIGHT([
 Copyright 2006 International Business Machines and others.
@@ -43,9 +43,13 @@ AC_COIN_RPATH_FLAGS([$expanded_libdir])
 # Required packages.
 # We need Clp, Cbc, and the OSI interface to CLP to build CoinCbc.cpp.
 
-AC_COIN_CHK_PKG(Cbc, [cbc clp osi-clp])
+AC_COIN_CHK_PKG(Cbc, [CoinMPLib])
+AC_COIN_CHK_PKG(Clp, [CoinMPLib])
 if test $coin_has_cbc != yes; then
     AC_MSG_ERROR([Required package Cbc not available.])
+fi
+if test $coin_has_clp != yes; then
+    AC_MSG_ERROR([Required package Clp not available.])
 fi
 
 ##############################################################################
@@ -64,6 +68,8 @@ AC_CONFIG_FILES([Makefile
 
 # Here put the location and name of the configuration header file
 AC_CONFIG_HEADER([src/config.h src/config_coinmp.h])
+
+AC_COIN_FINALIZE_FLAGS(CoinMPLib)
 
 # Finally, we let configure write all the output...
 AC_COIN_FINALIZE

@@ -27,9 +27,9 @@ libCoinMP_la_SOURCES = \
 	CoinMPConfig.h
 
 # List all additionally required libraries
-if DEPENDENCY_LINKING
-libCoinMP_la_LIBADD = $(COINMP_LIBS)
-endif
+#if DEPENDENCY_LINKING
+libCoinMP_la_LIBADD = $(COINMPLIB_LFLAGS)
+#endif
 
 # This is for libtool (on Windows)
 libCoinMP_la_LDFLAGS = $(LT_LDFLAGS)
@@ -42,7 +42,7 @@ libCoinMP_la_LDFLAGS = $(LT_LDFLAGS)
 # "cygpath" stuff is necessary to compile with native compilers on Windows.
 # "top_srcdir" refers to the basic directory for the main package that is
 # being compiled.
-AM_CPPFLAGS = $(COINMP_CFLAGS)
+AM_CPPFLAGS = $(COINMPLIB_CFLAGS)
 
 # This line is necessary to allow VPATH compilation
 DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` -I.
@@ -53,7 +53,7 @@ DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` -I.
 
 # Here list all the header files that are required by a user of the library,
 # and that therefore should be installed in 'install'
-includecoindir = $(includedir)/coin
+includecoindir = $(includedir)/coin-or
 includecoin_HEADERS = CoinMP.h 
 
 #######################################################################

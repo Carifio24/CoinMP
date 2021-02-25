@@ -17,14 +17,14 @@ noinst_PROGRAMS = unitTest
 unitTest_SOURCES = unitTest.cpp
 
 # List libraries of COIN projects
-unitTest_LDADD = ../src/libCoinMP.la $(COINMP_LIBS)
+unitTest_LDADD = ../src/libCoinMP.la $(COINMPLIB_LFLAGS)
 
 # Here list all include flags, relative to this "srcdir" directory.  This
 # "cygpath" stuff is necessary to compile with native compilers on Windows
-AM_CPPFLAGS = -I`$(CYGPATH_W) $(srcdir)/../src` $(COINMP_CFLAGS)
+AM_CPPFLAGS = -I`$(CYGPATH_W) $(srcdir)/../src` $(COINMPLIB_CFLAGS)
 
 # This line is necessary to allow VPATH compilation
-DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` 
+#DEFAULT_INCLUDES = -I. -I`$(CYGPATH_W) $(srcdir)` 
 
 test: unitTest$(EXEEXT)
 	./unitTest$(EXEEXT)

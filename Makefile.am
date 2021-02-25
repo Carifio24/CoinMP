@@ -23,8 +23,6 @@ if ALWAYS_FALSE
   SUBDIRS += test
 endif
 
-pkgconfiglib_DATA = coinmp.pc
-
 
 ########################################################################
 #             Additional files to be included in tarball               #
@@ -58,25 +56,25 @@ distclean-local:
 #                  Installation of the examples dir                    #
 ########################################################################
 
-pkgconfiglibdir = $(libdir)/pkgconfig
+#pkgconfiglibdir = $(libdir)/pkgconfig
 pkgconfiglib_DATA = coinmp.pc
 
 addlibsdir = $(DESTDIR)$(datadir)/coin/doc/CoinMP
 
 addlibs_DATA = examples/Makefile examples/example.c
 
-install-data-hook:
-	@$(mkdir_p) "$(addlibsdir)"
-if COIN_HAS_PKGCONFIG
-	PKG_CONFIG_PATH=@COIN_PKG_CONFIG_PATH@:$(DESTDIR)$(pkgconfiglibdir) \
-	$(PKG_CONFIG) --libs coinmp > $(addlibsdir)/coinmp_addlibs.txt
-else
-if COIN_CXX_IS_CL
-	echo "-libpath:`$(CYGPATH_W) @abs_lib_dir@` libCoinMP.lib @CBCLIB_LIBS_INSTALLED@" > $(addlibsdir)/coin_addlibs.txt
-else
-	echo -L@abs_lib_dir@ -lCoinMP @COINMP_LIBS_INSTALLED@ > $(addlibsdir)/coinmp_addlibs.txt
-endif
-endif
+# install-data-hook:
+# 	@$(mkdir_p) "$(addlibsdir)"
+# if COIN_HAS_PKGCONFIG
+# 	PKG_CONFIG_PATH=@COIN_PKG_CONFIG_PATH@:$(DESTDIR)$(pkgconfiglibdir) \
+# 	$(PKG_CONFIG) --libs coinmp > $(addlibsdir)/coinmp_addlibs.txt
+# else
+# if COIN_CXX_IS_CL
+# 	echo "-libpath:`$(CYGPATH_W) @abs_lib_dir@` libCoinMP.lib @CBCLIB_LIBS_INSTALLED@" > $(addlibsdir)/coin_addlibs.txt
+# else
+# 	echo -L@abs_lib_dir@ -lCoinMP @COINMP_LIBS_INSTALLED@ > $(addlibsdir)/coinmp_addlibs.txt
+# endif
+# endif
 
 uninstall-hook:
 	rm -f $(addlibsdir)/coinmp_addlibs.txt

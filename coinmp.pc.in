@@ -1,12 +1,12 @@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
-includedir=@includedir@/coin
+includedir=@includedir@/coin-or
 
-Name: CoinMP
+Name: @PACKAGE_NAME@
 Description: Simple C API for COIN-OR Solvers Clp and Cbc
 URL: @PACKAGE_URL@
 Version: @PACKAGE_VERSION@
-Libs: -L${libdir} -lCoinMP @COINMP_PCLIBS@
+Libs: -L${libdir} -lCoinMP @COINMPLIB_LFLAGS_NOPC@
 Cflags: -I${includedir}
-Requires: @COINMP_PCFILES@
+Requires: @COINMPLIB_PCFILES@

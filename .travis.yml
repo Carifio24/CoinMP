@@ -35,3 +35,5 @@ before_script:
 
 script:
   - bash ./coinbrew build $PROJECT --no-prompt --verbosity 4 --test
+
+  

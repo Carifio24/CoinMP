@@ -44,10 +44,11 @@ AC_COIN_RPATH_FLAGS([$expanded_libdir])
 # We need Clp, Cbc, and the OSI interface to CLP to build CoinCbc.cpp.
 
 AC_COIN_CHK_PKG(Cbc, [CoinMPLib])
-AC_COIN_CHK_PKG(Clp, [CoinMPLib])
 if test $coin_has_cbc != yes; then
     AC_MSG_ERROR([Required package Cbc not available.])
 fi
+
+AC_COIN_CHK_PKG(Clp, [CoinMPLib])
 if test $coin_has_clp != yes; then
     AC_MSG_ERROR([Required package Clp not available.])
 fi

@@ -6,6 +6,9 @@
 /* Define to 1 if Cbc is available. */
 #undef COINMP_HAS_CBC
 
+/* Define to 1 if Cgl is available. */
+#undef COINMP_HAS_CGL
+
 /* Define to 1 if Clp is available. */
 #undef COINMP_HAS_CLP
 

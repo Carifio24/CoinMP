@@ -66,3 +66,4 @@ install-exec-local:
 uninstall-local:
 	rm -f $(DESTDIR)$(includecoindir)/CoinMPConfig.h
 
+
